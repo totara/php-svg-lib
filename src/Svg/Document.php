@@ -53,6 +53,8 @@ class Document extends AbstractTag
     /** @var \Sabberworm\CSS\CSSList\Document[] */
     protected $styleSheets = array();
 
+    public $allowExternalReferences = true;
+
     public function loadFile($filename)
     {
         $this->filename = $filename;
@@ -195,7 +197,7 @@ class Document extends AbstractTag
     {
         $surface = $this->getSurface();
 
-        $style = new DefaultStyle();
+        $style = new DefaultStyle($this);
         $style->inherit($this);
         $style->fromAttributes($attributes);
 
@@ -398,4 +400,4 @@ class Document extends AbstractTag
             $tag->handleEnd();
         }
     }
-} 
+}

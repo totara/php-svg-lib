@@ -17,7 +17,7 @@ class Style
     const TYPE_NAME = 3;
     const TYPE_ANGLE = 4;
     const TYPE_NUMBER = 5;
-
+    private $_document;
     public $color;
     public $opacity;
     public $display;
@@ -40,6 +40,12 @@ class Style
     public $fontWeight = 'normal';
     public $fontStyle = 'normal';
     public $textAnchor = 'start';
+
+    public function __construct($document = null) {
+        if ($document !== null) {
+            $this->_document = $document;
+        }
+    }
 
     protected function getStyleMap()
     {
@@ -160,6 +166,16 @@ class Style
 
                     default:
                         $value = $styles[$from];
+                }
+
+                if ($from === "font-family") {
+                    $scheme = \strtolower(parse_url($value, PHP_URL_SCHEME) ?: "");
+                    if (
+                        $scheme === "phar" || \strtolower(\substr($value, 0, 7)) === "phar://"
+                        || ($this->_document !== null && $this->_document->allowExternalReferences === false && $scheme !== "data")
+                    ) {
+                        continue;
+                    }
                 }
 
                 if ($value !== null) {
